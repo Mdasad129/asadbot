@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Name - Portfolio</title>
+  <style>
+    :root {
+      --primary-bg: #fafafa;
+      --primary-color: #222;
+      --accent: #6366f1;
+      --nav-bg: #fff;
+      --project-bg: #f4f4f4;
+    }
+    body {
+      margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--primary-bg); color: var(--primary-color);
+    }
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 40px; background: var(--nav-bg); box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+      position: sticky; top: 0; z-index: 100;
+    }
+    nav h1 { margin: 0; font-size: 1.5em; }
+    nav ul { list-style: none; display: flex; gap: 25px; margin: 0; padding: 0; align-items: center; }
+    nav a { text-decoration: none; color: var(--primary-color); font-weight: 500; transition: color 0.2s; }
+    nav a:hover { color: var(--accent); }
+    #theme-toggle { background: none; border: none; font-size: 1.3em; cursor: pointer; }
+
+    main { max-width: 800px; margin: 40px auto; padding: 20px; }
+    section { margin-bottom: 45px; }
+    h2 { color: var(--accent); }
+    .project { background: var(--project-bg); padding: 15px 20px; border-radius: 7px; margin-bottom: 15px; }
+    form { display: flex; flex-direction: column; gap: 12px; max-width: 400px; }
+    input, textarea { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 1em; }
+    button[type="submit"] { background: var(--accent); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+    button[type="submit"]:hover { background: #4f46e5; }
+    #form-msg { color: green; margin-top: 5px; min-height: 18px; display: block;}
+
+    footer { text-align: center; padding: 18px 0; background: var(--nav-bg); color: #888; margin-top: 30px; }
+
+    @media (max-width: 600px) {
+      nav { flex-direction: column; padding: 10px 10px; }
+      main { padding: 10px; }
+    }
+    body.dark {
+      --primary-bg: #18181b;
+      --primary-color: #f4f4f4;
+      --nav-bg: #232336;
+      --project-bg: #22223b;
+      --accent: #a5b4fc;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <h1>Your Name</h1>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><button id="theme-toggle">🌙</button></li>
+    </ul>
+  </nav>
+  <main>
+    <section id="about">
+      <h2>About Me</h2>
+      <p>Hello! I'm a web developer passionate about creating beautiful and functional web applications.</p>
+    </section>
+    <section id="skills">
+      <h2>Skills</h2>
+      <ul>
+        <li>HTML, CSS, JavaScript</li>
+        <li>React, Node.js</li>
+        <li>Responsive Design</li>
+        <li>Git & GitHub</li>
+      </ul>
+    </section>
+    <section id="projects">
+      <h2>Projects</h2>
+      <div class="project">
+        <h3>Portfolio Website</h3>
+        <p>A responsive personal portfolio website built with HTML, CSS, and JS.</p>
+      </div>
+      <div class="project">
+        <h3>ToDo App</h3>
+        <p>A simple ToDo application to manage daily tasks.</p>
+      </div>
+    </section>
+    <section id="contact">
+      <h2>Contact</h2>
+      <form id="contact-form">
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Your Email" required>
+        <textarea placeholder="Your Message" required></textarea>
+        <button type="submit">Send</button>
+        <span id="form-msg"></span>
+      </form>
+    </section>
+  </main>
+  <footer>
+    &copy; 2025 Your Name. All rights reserved.
+  </footer>
+  <script>
+    // Theme switch
+    const themeToggle = document.getElementById('theme-toggle');
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+    });
+
+    // Simple contact form handler
+    const form = document.getElementById('contact-form');
+    const formMsg = document.getElementById('form-msg');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      formMsg.textContent = "Thank you for your message!";
+      form.reset();
+      setTimeout(() => { formMsg.textContent = ""; }, 3000);
+    });
+  </script>
+</body>
+</html>
