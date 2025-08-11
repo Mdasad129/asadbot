@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Airbnb Replica</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #fafafa; margin: 0; }
+    .header { background: #FF5A5F; color: #fff; padding: 30px 0; text-align: center; font-size: 2em; font-weight: bold; }
+    .filter-bar { text-align: center; margin: 30px 0 20px 0; }
+    .filter-bar input { padding: 10px; font-size: 16px; width: 250px; border-radius: 5px; border: 1px solid #ccc; }
+    .listings { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
+    .card {
+      background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #ddd;
+      width: 300px; overflow: hidden; cursor: pointer; transition: transform 0.2s;
+    }
+    .card:hover { transform: scale(1.03); }
+    .card img { width: 100%; height: 180px; object-fit: cover; }
+    .card-body { padding: 18px; }
+    .card-title { font-size: 1.2em; font-weight: bold; margin-bottom: 8px; }
+    .card-location { color: #888; margin-bottom: 8px; }
+    .card-price { color: #FF5A5F; font-weight: bold; }
+    /* Modal styles */
+    .modal {
+      display: none; position: fixed; z-index: 10; left: 0; top: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.5); align-items: center; justify-content: center;
+    }
+    .modal-content {
+      background: #fff; border-radius: 10px; padding: 30px; width: 350px; position: relative;
+      box-shadow: 0 2px 16px #aaa;
+    }
+    .close-btn {
+      position: absolute; top: 10px; right: 15px; font-size: 1.5em; color: #888; cursor: pointer;
+    }
+    @media (max-width: 700px) {
+      .listings { flex-direction: column; align-items: center; }
+      .card { width: 90vw; }
+      .modal-content { width: 90vw; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">Airbnb Replica</div>
+  <div class="filter-bar">
+    <input type="text" id="locationFilter" placeholder="Search by location..." oninput="renderListings()" />
+  </div>
+  <div class="listings" id="listings"></div>
+
+  <!-- Modal for details -->
+  <div class="modal" id="modal">
+    <div class="modal-content" id="modalContent">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <div id="modalDetails"></div>
+    </div>
+  </div>
+
+  <script>
+    // Demo property data
+    const properties = [
+      {
+        title: "Cozy Beach House",
+        location: "Goa, India",
+        price: "₹4,500/night",
+        image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80",
+        description: "A beautiful beach house just steps from the sand. 2 bedrooms, WiFi, AC, kitchen."
+      },
+      {
+        title: "Modern Apartment",
+        location: "Bangalore, India",
+        price: "₹3,200/night",
+        image: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80",
+        description: "Stylish apartment in the city center. 1 bedroom, workspace, close to cafes and parks."
+      },
+      {
+        title: "Mountain Cabin",
+        location: "Manali, India",
+        price: "₹2,800/night",
+        image: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=600&q=80",
+        description: "Rustic cabin with stunning mountain views. Fireplace, 2 bedrooms, hiking trails nearby."
+      },
+      {
+        title: "Luxury Villa",
+        location: "Jaipur, India",
+        price: "₹7,500/night",
+        image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=600&q=80",
+        description: "Spacious villa with pool and garden. 4 bedrooms, chef’s kitchen, private parking."
+      }
+    ];
+
+    function renderListings() {
+      const filter = document.getElementById('locationFilter').value.toLowerCase();
+      const listings = document.getElementById('listings');
+      listings.innerHTML = '';
+      properties
+        .filter(p => p.location.toLowerCase().includes(filter))
+        .forEach((prop, idx) => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.onclick = () => showDetails(idx);
+          card.innerHTML = `
+            <img src="${prop.image}" alt="${prop.title}">
+            <div class="card-body">
+              <div class="card-title">${prop.title}</div>
+              <div class="card-location">${prop.location}</div>
+              <div class="card-price">${prop.price}</div>
+            </div>
+          `;
+          listings.appendChild(card);
+        });
+    }
+
+    function showDetails(idx) {
+      const prop = properties[idx];
+      document.getElementById('modalDetails').innerHTML = `
+        <img src="${prop.image}" alt="${prop.title}" style="width:100%;border-radius:8px;margin-bottom:15px;">
+        <div style="font-size:1.3em;font-weight:bold;">${prop.title}</div>
+        <div style="color:#888;margin-bottom:8px;">${prop.location}</div>
+        <div style="color:#FF5A5F;font-weight:bold;margin-bottom:10px;">${prop.price}</div>
+        <div>${prop.description}</div>
+      `;
+      document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside content
+    document.getElementById('modal').onclick = function(e) {
+      if (e.target === this) closeModal();
+    };
+
+    renderListings();
+  </script>
+</body>
+</html>

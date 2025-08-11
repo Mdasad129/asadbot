@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zerodha Replica</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f6fa; margin: 0; }
+    .header { background: #387ed1; color: #fff; padding: 30px 0; text-align: center; font-size: 2em; font-weight: bold; }
+    .search-bar { text-align: center; margin: 30px 0 20px 0; }
+    .search-bar input { padding: 10px; font-size: 16px; width: 250px; border-radius: 5px; border: 1px solid #ccc; }
+    .stocks-table { margin: 0 auto; width: 90%; max-width: 700px; border-collapse: collapse; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #ddd; }
+    th, td { padding: 15px; text-align: left; }
+    th { background: #eaf1fb; }
+    tr { border-bottom: 1px solid #eee; }
+    tr:last-child { border-bottom: none; }
+    .price-up { color: #2ecc40; }
+    .price-down { color: #ff4136; }
+    .refresh-btn { background: #387ed1; color: #fff; border: none; border-radius: 5px; padding: 8px 15px; cursor: pointer; margin-left: 10px; }
+    @media (max-width: 700px) {
+      .stocks-table, th, td { font-size: 14px; }
+      .stocks-table { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">Zerodha Replica</div>
+  <div class="search-bar">
+    <input type="text" id="stockSearch" placeholder="Search stocks..." oninput="renderStocks()" />
+    <button class="refresh-btn" onclick="fetchStockPrices()">Refresh Prices</button>
+  </div>
+  <table class="stocks-table">
+    <thead>
+      <tr>
+        <th>Symbol</th>
+        <th>Name</th>
+        <th>Price (USD)</th>
+        <th>Change</th>
+      </tr>
+    </thead>
+    <tbody id="stocksBody"></tbody>
+  </table>
+  <script>
+    // Demo stock symbols (US stocks for free API)
+    const stocks = [
+      { symbol: "AAPL", name: "Apple Inc." },
+      { symbol: "GOOGL", name: "Alphabet Inc." },
+      { symbol: "MSFT", name: "Microsoft Corp." },
+      { symbol: "TSLA", name: "Tesla Inc." },
+      { symbol: "AMZN", name: "Amazon.com Inc." },
+      { symbol: "META", name: "Meta Platforms Inc." }
+    ];
+    let stockPrices = {};
+
+    async function fetchStockPrices() {
+      const symbols = stocks.map(s => s.symbol).join(',');
+      const url = `https://financialmodelingprep.com/api/v3/quote/${symbols}?apikey=demo`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        data.forEach(item => {
+          stockPrices[item.symbol] = {
+            price: item.price,
+            change: item.change,
+            changesPercentage: item.changesPercentage
+          };
+        });
+        renderStocks();
+      } catch (e) {
+        alert("Failed to fetch stock prices.");
+      }
+    }
+
+    function renderStocks() {
+      const filter = document.getElementById('stockSearch').value.toLowerCase();
+      const tbody = document.getElementById('stocksBody');
+      tbody.innerHTML = '';
+      stocks
+        .filter(s => s.symbol.toLowerCase().includes(filter) || s.name.toLowerCase().includes(filter))
+        .forEach(s => {
+          const priceObj = stockPrices[s.symbol] || {};
+          const price = priceObj.price !== undefined ? priceObj.price.toFixed(2) : '...';
+          const change = priceObj.change !== undefined ? priceObj.change.toFixed(2) : '';
+          const changeClass = priceObj.change > 0 ? 'price-up' : priceObj.change < 0 ? 'price-down' : '';
+          const percent = priceObj.changesPercentage !== undefined ? `(${priceObj.changesPercentage.toFixed(2)}%)` : '';
+          tbody.innerHTML += `
+            <tr>
+              <td>${s.symbol}</td>
+              <td>${s.name}</td>
+              <td><b>${price}</b></td>
+              <td class="${changeClass}">${change} ${percent}</td>
+            </tr>
+          `;
+        });
+    }
+
+    // Initial fetch
+    fetchStockPrices();
+  </script>
+</body>
+</html>
