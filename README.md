@@ -1,2 +1,0 @@
-# asadbot
-new repo
